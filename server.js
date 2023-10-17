@@ -1,20 +1,18 @@
+const db = require('./config/connection')
 const inquirer = require("inquirer");
 const chalk = require('chalk');
 const figlet = require('figlet');
-console.log(chalk.blue('Hello world!'));
-  figlet(`     Employee\n     Manager`, function (err, data) {
-    if (err) {
-      console.log("Something went wrong...");
-      console.dir(err);
-      return;
-    }
+
+
+
+
     const horizontalLine ='---------------------------------------------------------------';
     console.log(horizontalLine);
-    console.log(chalk.cyan(data));
+    console.log(chalk.cyan(figlet.textSync(`     Employee\n     Manager`)));
     console.log(horizontalLine)
-    promptUser()
-  });
-  
+ 
+
+
   const promptUser = () => {
     inquirer.prompt([
     
@@ -22,9 +20,38 @@ console.log(chalk.blue('Hello world!'));
       type: "list",
       message: "What would you like todo?",
       choices: ['View All Employes', 'Add Employee', 'Update Employee Role', 'View All Roles' , 'Add Role' , 'View All Departments' , 'Add Department'],
-      name:"db",
+      name:"database",
     },
     
   
-  ])
+  ]).then((answers) => {
+    switch(answers.database) {
+        case 'View All Employes':
+            viewEmployee();
+            break;
+    }
+
+
+  })
 };
+
+
+// query functions
+
+const viewEmployee = () => {
+    
+    db.query(
+      "SELECT employee.id, employee.first_name, employee.last_name, role.title FROM employee JOIN role ON employee.role_id = role.id",
+      (err, res) => {
+        if (err) {
+          throw err;
+        }
+        console.table(res);
+        promptUser();
+      }
+    );
+  };
+  
+
+
+promptUser();
