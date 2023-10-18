@@ -25,6 +25,7 @@ const figlet = require('figlet');
     
   
   ]).then((answers) => {
+    // switch case statement 
     switch(answers.database) {
         case 'View All Employes':
             viewEmployee();
@@ -44,6 +45,9 @@ const figlet = require('figlet');
         case 'Add Role':
             addRole();
             break;
+        case 'Add Department':
+            addDepartment();
+            break;
     }
 
 
@@ -51,8 +55,8 @@ const figlet = require('figlet');
 };
 
 
-// query functions
-
+//   functions used based on choices
+// shows all employees
 const viewEmployee = () => {
     
     db.query(
@@ -69,7 +73,7 @@ const viewEmployee = () => {
       }
     );
   };
-//   functions 
+// adds employee
   const addEmployee = () => {
     inquirer
       .prompt([
@@ -110,6 +114,7 @@ const viewEmployee = () => {
         );
       });
   };
+//   shows all departments
   const viewDepartments = () => {
     db.query(
       "SELECT * FROM department",
@@ -134,6 +139,7 @@ const viewEmployee = () => {
       }
     );
   }
+//   updates role
   const updateRole = () => {
     inquirer
       .prompt([
@@ -168,6 +174,7 @@ const viewEmployee = () => {
         );
       });
   };
+//   adds role
   const addRole = () => {
     inquirer
       .prompt([
@@ -202,6 +209,31 @@ const viewEmployee = () => {
         );
       });
   };
+//   adds department
+  const addDepartment = () => {
+    inquirer
+      .prompt([
+        {
+          type: 'input',
+          name: 'department',
+          message: 'Please provide the name of the department:',
+        },
+        
+      ])
+      .then((answers) => {
+        const { department } = answers;
   
+        db.query(
+          'INSERT INTO department (name) VALUES (?)',
+          [ department],
+          (err, res) => {
+            if (err) {
+              throw err;
+            }
+            promptUser();
+          }
+        );
+      });
+  };
   
 promptUser();
