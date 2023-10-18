@@ -103,7 +103,7 @@ const viewEmployee = () => {
   
         
         db.query(
-          'UPDATE employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)',
+          'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)',
           [first_name, last_name, role_id, manager_id],
           (err, res) => {
             if (err) {
