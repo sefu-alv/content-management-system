@@ -29,6 +29,9 @@ const figlet = require('figlet');
         case 'View All Employes':
             viewEmployee();
             break;
+        case 'Add Employee':
+            addEmployee();
+            break;
     }
 
 
@@ -41,7 +44,10 @@ const figlet = require('figlet');
 const viewEmployee = () => {
     
     db.query(
-      "SELECT employee.id, employee.first_name, employee.last_name, role.title FROM employee JOIN role ON employee.role_id = role.id",
+        "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS Department, role.salary, employee.manager_id " + 
+        "FROM employee " +
+        "JOIN role ON employee.role_id = role.id " +
+        "JOIN department ON role.department_id = department.id",
       (err, res) => {
         if (err) {
           throw err;
@@ -51,7 +57,45 @@ const viewEmployee = () => {
       }
     );
   };
+//   functions 
+  const addEmployee = () => {
+    inquirer
+      .prompt([
+        {
+          type: 'input',
+          name: 'first_name',
+          message: 'Enter the first name of the employee:',
+        },
+        {
+          type: 'input',
+          name: 'last_name',
+          message: 'Enter the last name of the employee:',
+        },
+        {
+          type: 'input',
+          name: 'role_id',
+          message: 'Enter the role ID for the employee:',
+        },
+        {
+          type: 'input',
+          name: 'manager_id',
+          message: 'Enter the manager ID for the employee:',
+        },
+      ])
+      .then((answers) => {
+        const { first_name, last_name, role_id, manager_id } = answers;
   
-
-
+        
+        db.query(
+          'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)',
+          [first_name, last_name, role_id, manager_id],
+          (err, res) => {
+            if (err) {
+              throw err;
+            }
+            promptUser(); 
+          }
+        );
+      });
+  };
 promptUser();
