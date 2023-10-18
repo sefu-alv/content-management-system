@@ -32,6 +32,12 @@ const figlet = require('figlet');
         case 'Add Employee':
             addEmployee();
             break;
+        case 'View All Departments':
+            viewDepartments();
+            break;
+        case 'View All Roles':
+            viewRoles();
+            break;
     }
 
 
@@ -98,4 +104,29 @@ const viewEmployee = () => {
         );
       });
   };
+  const viewDepartments = () => {
+    db.query(
+      "SELECT * FROM role",
+      (err, res) => {
+        if (err) {
+          throw err;
+        }
+        console.table(res);
+        promptUser();
+      }
+    );
+  }
+  const viewRoles = () => {
+    db.query(
+      "SELECT * FROM department",
+      (err, res) => {
+        if (err) {
+          throw err;
+        }
+        console.table(res);
+        promptUser();
+      }
+    );
+  }
+  
 promptUser();
