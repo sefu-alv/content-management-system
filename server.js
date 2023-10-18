@@ -38,6 +38,12 @@ const figlet = require('figlet');
         case 'View All Roles':
             viewRoles();
             break;
+        case 'Update Employee Role':
+            updateRole();
+            break;
+        case 'Add Role':
+            addRole();
+            break;
     }
 
 
@@ -93,7 +99,7 @@ const viewEmployee = () => {
   
         
         db.query(
-          'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)',
+          'UPDATE employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)',
           [first_name, last_name, role_id, manager_id],
           (err, res) => {
             if (err) {
@@ -106,7 +112,7 @@ const viewEmployee = () => {
   };
   const viewDepartments = () => {
     db.query(
-      "SELECT * FROM role",
+      "SELECT * FROM department",
       (err, res) => {
         if (err) {
           throw err;
@@ -118,7 +124,7 @@ const viewEmployee = () => {
   }
   const viewRoles = () => {
     db.query(
-      "SELECT * FROM department",
+      "SELECT * FROM role",
       (err, res) => {
         if (err) {
           throw err;
@@ -128,5 +134,74 @@ const viewEmployee = () => {
       }
     );
   }
+  const updateRole = () => {
+    inquirer
+      .prompt([
+        {
+          type: 'input',
+          name: 'first_name',
+          message: 'First name of employee?',
+        },
+        {
+          type: 'input',
+          name: 'last_name',
+          message: 'Last name of employee?',
+        },
+        {
+          type: 'input',
+          name: 'new_role_id',
+          message: 'Enter the new role ID:',
+        },
+      ])
+      .then((answers) => {
+        const { first_name, last_name, new_role_id } = answers;
+  
+        db.query(
+          'UPDATE employee SET role_id = ? WHERE first_name = ? AND last_name = ?',
+          [new_role_id, first_name, last_name],
+          (err, res) => {
+            if (err) {
+              throw err;
+            }
+            promptUser();
+          }
+        );
+      });
+  };
+  const addRole = () => {
+    inquirer
+      .prompt([
+        {
+          type: 'input',
+          name: 'role',
+          message: 'Please provide the name of the role:',
+        },
+        {
+          type: 'input',
+          name: 'salary',
+          message: 'Please provide the salary of the role:',
+        },
+        {
+          type: 'input',
+          name: 'department',
+          message: 'Please provide the department where the role will be stored:',
+        },
+      ])
+      .then((answers) => {
+        const { role, salary, department } = answers;
+  
+        db.query(
+          'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)',
+          [role, salary, department],
+          (err, res) => {
+            if (err) {
+              throw err;
+            }
+            promptUser();
+          }
+        );
+      });
+  };
+  
   
 promptUser();
